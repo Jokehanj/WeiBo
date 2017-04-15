@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -221,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
      * 1. 切换页面的时候，还要调用showBottomBar来保证底部导航栏的显示
      *
      * @param index
-     * @param screenRotate
      */
     private void switchToFragment(String index) {
         mButtonBar.clearAnimation();
