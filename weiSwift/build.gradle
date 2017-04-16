@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "com.wenming.weiswift"
         minSdkVersion 14
-        targetSdkVersion 21
+        targetSdkVersion 25
     }
 
     buildTypes {
@@ -29,11 +29,9 @@ dependencies {
     compile project(path: ':swipebacklayout')
     compile files('libs/universal-image-loader-1.9.5.jar')
 
-    compile 'com.android.support:recyclerview-v7:24.2.0'
-    compile 'com.android.support:appcompat-v7:24.2.0'
-
-
-    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.google.code.gson:gson:2.7'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.github.wenmingvs:LogReport:1.0.3'
     compile 'com.cesards.android:cropimageview:1.0.2.1'

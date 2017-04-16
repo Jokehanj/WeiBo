@@ -2,10 +2,8 @@ package com.wenming.weiswift.ui.unlogin.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -14,16 +12,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.wenming.weiswift.R;
-import com.wenming.weiswift.ui.common.StatusBarUtils;
 import com.wenming.weiswift.ui.common.login.Constants;
 import com.wenming.weiswift.ui.unlogin.fragment.DiscoverFragment;
 import com.wenming.weiswift.ui.unlogin.fragment.HomeFragment;
 import com.wenming.weiswift.ui.unlogin.fragment.MessageFragment;
 import com.wenming.weiswift.ui.unlogin.fragment.ProfileFragment;
 import com.wenming.weiswift.utils.ToastUtil;
-
 
 /**
  * Created by wenmingvs on 16/5/9.
@@ -41,13 +36,9 @@ public class UnLoginActivity extends AppCompatActivity {
     private MessageFragment mMessageFragment;
     private DiscoverFragment mDiscoverFragment;
     private ProfileFragment mProfileFragment;
-
-
     private FragmentManager mFragmentManager;
-    private Oauth2AccessToken mAccessToken;
-    private RelativeLayout mHomeTab, mMessageTab, mDiscoeryTab, mProfile;
+    private RelativeLayout mHomeTab, mMessageTab, mDiscoveryTab, mProfile;
     private ImageView mPostTab;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,18 +47,13 @@ public class UnLoginActivity extends AppCompatActivity {
         mContext = this;
         mHomeTab = (RelativeLayout) findViewById(R.id.tv_home);
         mMessageTab = (RelativeLayout) findViewById(R.id.tv_message);
-        mDiscoeryTab = (RelativeLayout) findViewById(R.id.tv_discovery);
+        mDiscoveryTab = (RelativeLayout) findViewById(R.id.tv_discovery);
         mProfile = (RelativeLayout) findViewById(R.id.tv_profile);
         mPostTab = (ImageView) findViewById(R.id.fl_post);
 
         mFragmentManager = getSupportFragmentManager();
         setTabFragment(HOME_FRAGMENT);
         setUpListener();
-//        StatusBarUtils.from(this)
-//                .setTransparentStatusbar(true)
-//                .setStatusBarColor(Color.WHITE)
-//                .setLightStatusBar(true)
-//                .process(this);
     }
 
     private void setTabFragment(int index) {
@@ -97,7 +83,7 @@ public class UnLoginActivity extends AppCompatActivity {
                     break;
 
                 case DISCOVERY_FRAGMENT:
-                    mDiscoeryTab.setSelected(true);
+                    mDiscoveryTab.setSelected(true);
                     if (mDiscoverFragment == null) {
                         mDiscoverFragment = new DiscoverFragment();
                         transaction.add(R.id.contentLayout, mDiscoverFragment);
@@ -139,7 +125,7 @@ public class UnLoginActivity extends AppCompatActivity {
         }
         mHomeTab.setSelected(false);
         mMessageTab.setSelected(false);
-        mDiscoeryTab.setSelected(false);
+        mDiscoveryTab.setSelected(false);
         mProfile.setSelected(false);
     }
 
@@ -163,7 +149,7 @@ public class UnLoginActivity extends AppCompatActivity {
                 ToastUtil.showShort(mContext, "请先登录");
             }
         });
-        mDiscoeryTab.setOnClickListener(new View.OnClickListener() {
+        mDiscoveryTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setTabFragment(DISCOVERY_FRAGMENT);
