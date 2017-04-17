@@ -20,5 +20,5 @@ android {
 
 dependencies {
     compile files('libs/weiboSDKCore_3.1.2.jar')
-    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:support-v4:25.2.0'
 }
