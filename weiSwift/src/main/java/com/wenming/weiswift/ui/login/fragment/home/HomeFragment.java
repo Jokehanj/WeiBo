@@ -1,6 +1,5 @@
 package com.wenming.weiswift.ui.login.fragment.home;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
@@ -46,35 +45,31 @@ import java.util.ArrayList;
  */
 public class HomeFragment extends Fragment implements HomeFragmentView, ArrowDialog.onDialogButtonClick {
 
-    private ArrayList<Status> mDatas;
+    /**
+     * 手指滑动距离多少个像素点的距离，才隐藏bar
+     */
+    private static final int HIDE_THRESHOLD = 80;
     public Context mContext;
     public Activity mActivity;
     public View mView;
-    private LinearLayout mGroup;
     public RecyclerView mRecyclerView;
     public TextView mUserNameTextView;
     public TextView mErrorMessage;
     public SwipeRefreshLayout mSwipeRefreshLayout;
     public WeiboAdapter mAdapter;
+    private ArrayList<Status> mDatas;
+    private LinearLayout mGroup;
     private HeaderAndFooterRecyclerViewAdapter mHeaderAndFooterRecyclerViewAdapter;
     private HomeFragmentPresent mHomePresent;
     private long mCurrentGroup = Constants.GROUP_TYPE_ALL;
     private LinearLayout mEmptyLayout;
     private GroupPopWindow mPopWindow;
-
     private boolean mComeFromAccoutActivity;
     private String mUserName;
-
-
     /**
      * 顶部导航栏
      */
     private RelativeLayout mTopBar;
-
-    /**
-     * 手指滑动距离多少个像素点的距离，才隐藏bar
-     */
-    private static final int HIDE_THRESHOLD = 80;
     /**
      * 记录手指滑动的距离
      */
@@ -85,7 +80,59 @@ public class HomeFragment extends Fragment implements HomeFragmentView, ArrowDia
     private boolean mControlsVisible = true;
 
     private onButtonBarListener mOnBottonBarListener;
+    public EndlessRecyclerOnScrollListener mOnScrollListener = new EndlessRecyclerOnScrollListener() {
+        @Override
+        public void onLoadNextPage(View view) {
+            super.onLoadNextPage(view);
+            if (mDatas != null && mDatas.size() > 0) {
+                showLoadFooterView();
+                mHomePresent.requestMoreData(mCurrentGroup, mContext);
+            }
+        }
 
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            //手指向上滑动
+            if (mScrolledDistance > HIDE_THRESHOLD && mControlsVisible) {
+                if (mOnBottonBarListener != null) {
+                    hideTopBar();
+                    mOnBottonBarListener.hideButtonBar();
+                }
+                mControlsVisible = false;
+                mScrolledDistance = 0;
+            }
+            //手指向下滑动
+            else if (mScrolledDistance < -HIDE_THRESHOLD && !mControlsVisible) {
+                if (mOnBottonBarListener != null) {
+                    showTopBar();
+                    mOnBottonBarListener.showButtonBar();
+                }
+                mControlsVisible = true;
+                mScrolledDistance = 0;
+            }
+            if ((mControlsVisible && dy > 0) || (!mControlsVisible && dy < 0)) {
+                mScrolledDistance += dy;
+            }
+        }
+    };
+
+    private HomeFragment() {
+    }
+
+    /**
+     * 静态工厂方法需要一个int型的值来初始化fragment的参数，
+     * 然后返回新的fragment到调用者
+     */
+    public static HomeFragment newInstance(boolean comeFromAccoutActivity) {
+        HomeFragment homeFragment = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("comeFromAccoutActivity", comeFromAccoutActivity);
+        homeFragment.setArguments(args);
+        return homeFragment;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mActivity = getActivity();
         mContext = getContext();
@@ -126,22 +173,6 @@ public class HomeFragment extends Fragment implements HomeFragmentView, ArrowDia
         super.onDestroyView();
     }
 
-    public HomeFragment() {
-    }
-
-    /**
-     * 静态工厂方法需要一个int型的值来初始化fragment的参数，
-     * 然后返回新的fragment到调用者
-     */
-    public static HomeFragment newInstance(boolean comeFromAccoutActivity) {
-        HomeFragment homeFragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putBoolean("comeFromAccoutActivity", comeFromAccoutActivity);
-        homeFragment.setArguments(args);
-        return homeFragment;
-    }
-
-
     public void initRecyclerView() {
         mDatas = new ArrayList<>();
         mAdapter = new WeiboAdapter(mDatas, mContext) {
@@ -166,7 +197,6 @@ public class HomeFragment extends Fragment implements HomeFragmentView, ArrowDia
         mRecyclerView.setAdapter(mHeaderAndFooterRecyclerViewAdapter);
         RecyclerViewUtils.setHeaderView(mRecyclerView, new HomeHeadView(mContext));
     }
-
 
     private void initRefreshLayout() {
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -265,7 +295,6 @@ public class HomeFragment extends Fragment implements HomeFragmentView, ArrowDia
         }
     }
 
-
     @Override
     public void updateListView(ArrayList<Status> statuselist) {
         mRecyclerView.addOnScrollListener(mOnScrollListener);
@@ -295,7 +324,6 @@ public class HomeFragment extends Fragment implements HomeFragmentView, ArrowDia
         });
     }
 
-
     @Override
     public void showLoadFooterView() {
         RecyclerViewStateUtils.setFooterViewState(mActivity, mRecyclerView, mDatas.size(), LoadingFooter.State.Loading, null);
@@ -316,7 +344,6 @@ public class HomeFragment extends Fragment implements HomeFragmentView, ArrowDia
         RecyclerViewStateUtils.setFooterViewState(mRecyclerView, LoadingFooter.State.NetWorkError);
     }
 
-
     @Override
     public void setGroupName(String userName) {
         mUserNameTextView.setText(userName);
@@ -334,44 +361,6 @@ public class HomeFragment extends Fragment implements HomeFragmentView, ArrowDia
     public void setUserName(String userName) {
         mUserName = userName;
     }
-
-
-    public EndlessRecyclerOnScrollListener mOnScrollListener = new EndlessRecyclerOnScrollListener() {
-        @Override
-        public void onLoadNextPage(View view) {
-            super.onLoadNextPage(view);
-            if (mDatas != null && mDatas.size() > 0) {
-                showLoadFooterView();
-                mHomePresent.requestMoreData(mCurrentGroup, mContext);
-            }
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            //手指向上滑动
-            if (mScrolledDistance > HIDE_THRESHOLD && mControlsVisible) {
-                if (mOnBottonBarListener != null) {
-                    hideTopBar();
-                    mOnBottonBarListener.hideButtonBar();
-                }
-                mControlsVisible = false;
-                mScrolledDistance = 0;
-            }
-            //手指向下滑动
-            else if (mScrolledDistance < -HIDE_THRESHOLD && !mControlsVisible) {
-                if (mOnBottonBarListener != null) {
-                    showTopBar();
-                    mOnBottonBarListener.showButtonBar();
-                }
-                mControlsVisible = true;
-                mScrolledDistance = 0;
-            }
-            if ((mControlsVisible && dy > 0) || (!mControlsVisible && dy < 0)) {
-                mScrolledDistance += dy;
-            }
-        }
-    };
 
     @Override
     public void onHiddenChanged(boolean hidden) {
