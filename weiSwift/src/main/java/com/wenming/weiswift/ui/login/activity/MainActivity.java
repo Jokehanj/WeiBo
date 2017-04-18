@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -140,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     .setStatusBarColor(Color.parseColor("#FFFFFF"))
                     .setLightStatusBar(true)
                     .process(this);
-        }else {
+        } else {
             StatusBarUtils.from(this)
                     .setTransparentStatusbar(true)
                     .setStatusBarColor(Color.parseColor("#262626"))
